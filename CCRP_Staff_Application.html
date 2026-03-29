@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCRP | Staff Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070C14;--surface:#0B1220;--card:#0F192A;--border:#1A2840;
+  --gold:#C8971A;--gold2:#E3AF22;--glow:rgba(200,151,26,0.12);
+  --red:#B03A2E;--green:#1A8A52;
+  --muted:#3D5572;--dim:#7A96B8;--text:#C8D8EC;--white:#EBF2FF;
+  --display:'Syne',sans-serif;--body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;line-height:1.6}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* noise overlay */
+body::after{content:'';position:fixed;inset:0;opacity:.025;pointer-events:none;z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+
+/* diagonal lines bg */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(135deg,transparent,transparent 80px,rgba(200,151,26,0.02) 80px,rgba(200,151,26,0.02) 81px);
+}
+
+/* ── HEADER ── */
+header{
+  position:relative;z-index:10;
+  border-bottom:1px solid var(--border);
+  background:rgba(7,12,20,0.9);
+  backdrop-filter:blur(16px);
+  padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+.h-brand{font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.h-right{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  padding:80px 40px 60px;
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;
+}
+.hero-eyebrow{
+  font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:5px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';width:30px;height:1px;background:var(--gold);}
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(40px,7vw,72px);font-weight:800;
+  color:var(--white);line-height:1;letter-spacing:-2px;
+  margin-bottom:16px;
+}
+.hero-title span{color:var(--gold);}
+.hero-desc{font-size:15px;color:var(--dim);max-width:480px;line-height:1.8;}
+.hero-badge{
+  text-align:center;flex-shrink:0;
+  border:1px solid var(--border);background:var(--surface);
+  padding:20px 24px;
+}
+.badge-val{font-family:var(--display);font-size:36px;font-weight:800;color:var(--gold);line-height:1;}
+.badge-key{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* ── MAIN ── */
+main{
+  position:relative;z-index:1;
+  max-width:900px;margin:0 auto;
+  padding:0 40px 80px;
+}
+
+/* ── SECTION LABEL ── */
+.sec-label{
+  font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:5px;
+  text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:14px;
+  margin:40px 0 20px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.sec-num{
+  font-family:var(--display);font-size:10px;font-weight:800;
+  color:var(--gold);min-width:28px;
+}
+
+/* ── FIELD ── */
+.field{margin-bottom:20px;}
+.field-label{
+  font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--dim);
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.req{color:var(--gold);font-size:13px;}
+.field-hint{font-size:12px;color:var(--muted);margin-bottom:8px;font-style:italic;}
+
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--card);
+  border:1px solid var(--border);
+  color:var(--text);font-family:var(--body);font-size:14px;
+  padding:13px 16px;outline:none;
+  transition:border-color .2s,background .2s;
+  -webkit-appearance:none;appearance:none;
+  resize:none;
+}
+input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{
+  border-color:var(--gold);background:rgba(200,151,26,0.04);
+}
+input[type=text]::placeholder,textarea::placeholder{color:var(--muted);}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C8971A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+select option{background:var(--card);}
+textarea{min-height:120px;line-height:1.6;}
+
+/* char counter */
+.char-wrap{position:relative;}
+.char-count{
+  position:absolute;bottom:10px;right:12px;
+  font-size:11px;color:var(--muted);
+  font-family:var(--display);letter-spacing:1px;
+  pointer-events:none;
+}
+.char-count.warn{color:var(--gold);}
+.char-count.over{color:var(--red);}
+
+/* two col */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* radio/checkbox group */
+.opts-group{display:flex;flex-direction:column;gap:8px;}
+.opt-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;background:var(--card);border:1px solid var(--border);
+  cursor:pointer;transition:all .15s;
+  font-size:14px;color:var(--dim);
+  user-select:none;
+}
+.opt-item:hover{border-color:var(--gold);color:var(--text);background:var(--glow);}
+.opt-item input{display:none;}
+.opt-box{
+  width:16px;height:16px;flex-shrink:0;
+  border:1px solid var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.opt-item.radio .opt-box{border-radius:50%;}
+.opt-item.selected{border-color:rgba(200,151,26,0.5);background:var(--glow);color:var(--white);}
+.opt-item.selected .opt-box{border-color:var(--gold);background:var(--gold);}
+.opt-item.radio.selected .opt-box::after{content:'';width:6px;height:6px;background:#000;border-radius:50%;}
+.opt-item.checkbox.selected .opt-box::after{content:'✓';font-size:10px;color:#000;font-weight:700;}
+
+/* availability grid */
+.avail-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.avail-day{
+  padding:10px 6px;text-align:center;
+  background:var(--card);border:1px solid var(--border);
+  cursor:pointer;transition:all .15s;font-size:12px;color:var(--muted);
+  font-family:var(--display);font-weight:700;letter-spacing:1px;
+}
+.avail-day:hover{border-color:var(--gold);color:var(--text);}
+.avail-day.selected{border-color:var(--gold);background:rgba(200,151,26,0.12);color:var(--gold);}
+.avail-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:8px;text-align:center;}
+
+/* scale */
+.scale-wrap{display:flex;gap:6px;align-items:center;}
+.scale-num{
+  flex:1;padding:10px 4px;text-align:center;
+  background:var(--card);border:1px solid var(--border);
+  cursor:pointer;transition:all .15s;
+  font-family:var(--display);font-size:14px;font-weight:700;color:var(--muted);
+}
+.scale-num:hover{border-color:var(--gold);color:var(--gold);}
+.scale-num.selected{border-color:var(--gold);background:rgba(200,151,26,0.12);color:var(--gold);}
+.scale-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* info box */
+.info-box{
+  border:1px solid var(--border);border-left:3px solid var(--gold);
+  background:rgba(200,151,26,0.04);
+  padding:14px 18px;margin-bottom:24px;
+  font-size:13px;color:var(--dim);line-height:1.7;
+}
+.info-box strong{color:var(--text);}
+
+/* error */
+.field-err{display:none;font-size:12px;color:var(--red);margin-top:6px;font-style:italic;}
+.field.has-error input,.field.has-error textarea,.field.has-error select{border-color:var(--red)!important;}
+.field.has-error .field-err{display:block;}
+
+/* ── SUBMIT ── */
+.submit-section{
+  margin-top:40px;
+  border-top:1px solid var(--border);
+  padding-top:32px;
+}
+.submit-agree{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px;background:var(--card);border:1px solid var(--border);
+  cursor:pointer;margin-bottom:24px;font-size:14px;color:var(--dim);
+  user-select:none;line-height:1.6;
+}
+.submit-agree .opt-box{margin-top:2px;flex-shrink:0;}
+.submit-agree.selected{border-color:rgba(200,151,26,0.4);color:var(--text);}
+
+.btn-submit{
+  font-family:var(--display);font-size:13px;font-weight:800;
+  letter-spacing:4px;text-transform:uppercase;
+  background:var(--gold);color:#000;border:none;
+  padding:18px 60px;cursor:pointer;width:100%;
+  transition:background .2s,transform .1s;
+  position:relative;overflow:hidden;
+}
+.btn-submit::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+  transition:left .5s;
+}
+.btn-submit:hover{background:var(--gold2);}
+.btn-submit:hover::before{left:100%;}
+.btn-submit:active{transform:scale(0.99);}
+.btn-submit:disabled{background:var(--muted);cursor:not-allowed;}
+
+.submit-note{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;}
+
+/* ── SUCCESS ── */
+#success-screen{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px;
+}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(26,138,82,0.15);border:2px solid var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;margin:0 auto 28px;
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-family:var(--display);font-size:36px;font-weight:800;color:var(--white);margin-bottom:12px;}
+.success-sub{font-size:15px;color:var(--dim);max-width:420px;line-height:1.8;}
+.success-ref{
+  margin-top:24px;font-family:var(--display);font-size:12px;letter-spacing:3px;
+  color:var(--muted);text-transform:uppercase;
+}
+.success-ref span{color:var(--gold);}
+
+@media(max-width:640px){
+  header{padding:0 20px;}
+  .hero{grid-template-columns:1fr;padding:50px 20px 40px;gap:24px;}
+  .hero-badge{display:none;}
+  main{padding:0 20px 60px;}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .avail-grid{grid-template-columns:repeat(4,1fr);}
+  .btn-submit{padding:16px 40px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-brand">CCRP</div>
+  <div class="h-right">Staff Application</div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Charleston County Roleplay</div>
+    <div class="hero-title">Join the<br><span>Staff Team.</span></div>
+    <p class="hero-desc">We're looking for dedicated, professional members who are committed to maintaining the quality of our community. Read the Staff Guide before applying.</p>
+  </div>
+  <div class="hero-badge">
+    <div class="badge-val">CCRP</div>
+    <div class="badge-key">Staff Team</div>
+  </div>
+</div>
+
+<main>
+  <div class="info-box">
+    <strong>Before you apply:</strong> Make sure you have read and understood the full CCRP Official Staff Guide. You are expected to pass the Staff Guide Examination before your application is reviewed. Applications without a passing exam score will be automatically rejected.
+  </div>
+
+  <form id="app-form" novalidate>
+
+    <!-- ── SECTION 1: PERSONAL ── -->
+    <div class="sec-label"><span class="sec-num">01</span>Personal Information</div>
+
+    <div class="grid-2">
+      <div class="field" id="f-roblox">
+        <div class="field-label">Roblox Username <span class="req">*</span></div>
+        <input type="text" placeholder="YourRobloxName" maxlength="20" id="roblox-user">
+        <div class="field-err">This field is required.</div>
+      </div>
+      <div class="field" id="f-discord">
+        <div class="field-label">Discord Username <span class="req">*</span></div>
+        <input type="text" placeholder="username" maxlength="40" id="discord-user">
+        <div class="field-err">This field is required.</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="field" id="f-age">
+        <div class="field-label">Your Age <span class="req">*</span></div>
+        <input type="number" placeholder="16" min="13" max="99" id="age">
+        <div class="field-err">Please enter a valid age (13+).</div>
+      </div>
+      <div class="field" id="f-timezone">
+        <div class="field-label">Timezone <span class="req">*</span></div>
+        <select id="timezone">
+          <option value="" disabled selected>Select...</option>
+          <optgroup label="Americas">
+            <option>EST (UTC-5)</option><option>CST (UTC-6)</option>
+            <option>MST (UTC-7)</option><option>PST (UTC-8)</option>
+          </optgroup>
+          <optgroup label="Europe">
+            <option>GMT (UTC+0)</option><option>CET (UTC+1)</option>
+            <option>EET (UTC+2)</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option>Other</option>
+          </optgroup>
+        </select>
+        <div class="field-err">Please select your timezone.</div>
+      </div>
+      <div class="field" id="f-playtime">
+        <div class="field-label">ERLC Hours <span class="req">*</span></div>
+        <input type="number" placeholder="500" min="0" id="playtime">
+        <div class="field-err">Please enter your hours.</div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: EXPERIENCE ── -->
+    <div class="sec-label"><span class="sec-num">02</span>Experience & History</div>
+
+    <div class="field" id="f-prev-staff">
+      <div class="field-label">Have you been staff on another ERLC server before? <span class="req">*</span></div>
+      <div class="opts-group" id="prev-staff-opts">
+        <label class="opt-item radio"><input type="radio" name="prev_staff" value="yes"><div class="opt-box"></div>Yes — I have previous ERLC staff experience</label>
+        <label class="opt-item radio"><input type="radio" name="prev_staff" value="no"><div class="opt-box"></div>No — this would be my first staff position</label>
+      </div>
+      <div class="field-err">Please select an option.</div>
+    </div>
+
+    <div class="field" id="f-prev-detail">
+      <div class="field-label">If yes — where and in what role?</div>
+      <div class="field-hint">Server name, rank held, how long. Write N/A if not applicable.</div>
+      <div class="char-wrap">
+        <textarea id="prev-detail" placeholder="e.g. Los Angeles Roleplay — Senior Moderator — 4 months" maxlength="300"></textarea>
+        <div class="char-count" id="cc-prev">0/300</div>
+      </div>
+    </div>
+
+    <div class="field" id="f-terminated">
+      <div class="field-label">Have you ever been terminated or blacklisted from a staff team? <span class="req">*</span></div>
+      <div class="opts-group" id="terminated-opts">
+        <label class="opt-item radio"><input type="radio" name="terminated" value="no"><div class="opt-box"></div>No</label>
+        <label class="opt-item radio"><input type="radio" name="terminated" value="yes"><div class="opt-box"></div>Yes — I will explain in the next field</label>
+      </div>
+      <div class="field-err">Please select an option.</div>
+    </div>
+
+    <div class="field" id="f-terminated-detail">
+      <div class="field-label">If yes — explain what happened</div>
+      <div class="field-hint">Be honest. Lying here is grounds for instant rejection and a permanent blacklist.</div>
+      <div class="char-wrap">
+        <textarea id="terminated-detail" placeholder="What happened, why, and what you learned from it..." maxlength="500"></textarea>
+        <div class="char-count" id="cc-term">0/500</div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: AVAILABILITY ── -->
+    <div class="sec-label"><span class="sec-num">03</span>Availability</div>
+
+    <div class="field">
+      <div class="field-label">Which days are you typically available? <span class="req">*</span></div>
+      <div class="avail-grid" id="avail-days">
+        <div class="avail-day" data-day="MON">MON</div>
+        <div class="avail-day" data-day="TUE">TUE</div>
+        <div class="avail-day" data-day="WED">WED</div>
+        <div class="avail-day" data-day="THU">THU</div>
+        <div class="avail-day" data-day="FRI">FRI</div>
+        <div class="avail-day" data-day="SAT">SAT</div>
+        <div class="avail-day" data-day="SUN">SUN</div>
+      </div>
+      <div class="avail-label" id="avail-err" style="color:var(--red);display:none;">Please select at least one day.</div>
+    </div>
+
+    <div class="field" id="f-hours-week">
+      <div class="field-label">How many hours per week can you dedicate to staffing? <span class="req">*</span></div>
+      <div class="field-hint">Minimum required quota is 1 hour/week. Be realistic.</div>
+      <select id="hours-week">
+        <option value="" disabled selected>Select...</option>
+        <option value="1-3">1–3 hours</option>
+        <option value="3-5">3–5 hours</option>
+        <option value="5-10">5–10 hours</option>
+        <option value="10+">10+ hours</option>
+      </select>
+      <div class="field-err">Please select an option.</div>
+    </div>
+
+    <!-- ── SECTION 4: QUESTIONS ── -->
+    <div class="sec-label"><span class="sec-num">04</span>Written Questions</div>
+
+    <div class="info-box">
+      Answer every question thoroughly. One-line answers will result in immediate rejection. Quality over quantity — but we expect real thought here.
+    </div>
+
+    <div class="field" id="f-why">
+      <div class="field-label">Why do you want to join the CCRP Staff Team? <span class="req">*</span></div>
+      <div class="field-hint">Minimum 80 characters. Tell us your actual reason — not what you think we want to hear.</div>
+      <div class="char-wrap">
+        <textarea id="why-join" placeholder="Your answer here..." maxlength="800" style="min-height:140px;"></textarea>
+        <div class="char-count" id="cc-why">0/800</div>
+      </div>
+      <div class="field-err" id="err-why">Minimum 80 characters required.</div>
+    </div>
+
+    <div class="field" id="f-scenario">
+      <div class="field-label">Scenario: A player is caught RDMing twice in one session. They apologize and say it was lag. What do you do? <span class="req">*</span></div>
+      <div class="field-hint">Minimum 60 characters. Walk us through your decision process.</div>
+      <div class="char-wrap">
+        <textarea id="scenario" placeholder="Your answer here..." maxlength="600" style="min-height:130px;"></textarea>
+        <div class="char-count" id="cc-sc">0/600</div>
+      </div>
+      <div class="field-err" id="err-sc">Minimum 60 characters required.</div>
+    </div>
+
+    <div class="field" id="f-strength">
+      <div class="field-label">What do you consider your strongest quality as a potential staff member? <span class="req">*</span></div>
+      <div class="char-wrap">
+        <textarea id="strength" placeholder="Your answer here..." maxlength="500" style="min-height:110px;"></textarea>
+        <div class="char-count" id="cc-str">0/500</div>
+      </div>
+      <div class="field-err">This field is required.</div>
+    </div>
+
+    <div class="field" id="f-weakness">
+      <div class="field-label">What is an area you need to improve on? <span class="req">*</span></div>
+      <div class="field-hint">Be honest. Everyone has weaknesses — pretending otherwise is a red flag.</div>
+      <div class="char-wrap">
+        <textarea id="weakness" placeholder="Your answer here..." maxlength="500" style="min-height:110px;"></textarea>
+        <div class="char-count" id="cc-wk">0/500</div>
+      </div>
+      <div class="field-err">This field is required.</div>
+    </div>
+
+    <!-- ── SECTION 5: MATURITY ── -->
+    <div class="sec-label"><span class="sec-num">05</span>Self-Assessment</div>
+
+    <div class="field" id="f-maturity">
+      <div class="field-label">Rate your maturity level (1 = least mature, 10 = most mature) <span class="req">*</span></div>
+      <div class="scale-wrap" id="maturity-scale">
+        <div class="scale-num" data-val="1">1</div>
+        <div class="scale-num" data-val="2">2</div>
+        <div class="scale-num" data-val="3">3</div>
+        <div class="scale-num" data-val="4">4</div>
+        <div class="scale-num" data-val="5">5</div>
+        <div class="scale-num" data-val="6">6</div>
+        <div class="scale-num" data-val="7">7</div>
+        <div class="scale-num" data-val="8">8</div>
+        <div class="scale-num" data-val="9">9</div>
+        <div class="scale-num" data-val="10">10</div>
+      </div>
+      <div class="scale-ends"><span>Immature</span><span>Very mature</span></div>
+      <div class="field-err" id="err-maturity">Please select a value.</div>
+    </div>
+
+    <div class="field" id="f-rules-read">
+      <div class="field-label">How thoroughly have you read the CCRP Staff Guide? <span class="req">*</span></div>
+      <div class="opts-group" id="rules-read-opts">
+        <label class="opt-item radio"><input type="radio" name="rules_read" value="full"><div class="opt-box"></div>I read it fully and understand everything</label>
+        <label class="opt-item radio"><input type="radio" name="rules_read" value="most"><div class="opt-box"></div>I read most of it</label>
+        <label class="opt-item radio"><input type="radio" name="rules_read" value="skim"><div class="opt-box"></div>I skimmed through it</label>
+        <label class="opt-item radio"><input type="radio" name="rules_read" value="no"><div class="opt-box"></div>I haven't read it yet</label>
+      </div>
+      <div class="field-err">Please select an option.</div>
+    </div>
+
+    <!-- ── SECTION 6: ADDITIONAL ── -->
+    <div class="sec-label"><span class="sec-num">06</span>Additional Information</div>
+
+    <div class="field">
+      <div class="field-label">Anything else you want us to know?</div>
+      <div class="field-hint">Additional skills, relevant context, or anything that sets you apart. Optional.</div>
+      <div class="char-wrap">
+        <textarea id="additional" placeholder="Optional..." maxlength="600"></textarea>
+        <div class="char-count" id="cc-add">0/600</div>
+      </div>
+    </div>
+
+    <!-- ── SUBMIT ── -->
+    <div class="submit-section">
+      <div class="submit-agree" id="agree-box">
+        <div class="opt-box"></div>
+        <div>I confirm that all information provided in this application is truthful and accurate. I understand that providing false information is grounds for immediate rejection and a permanent blacklist from CCRP staff. I have read and understood the CCRP Official Staff Guide in full.</div>
+      </div>
+      <button type="button" class="btn-submit" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
+      <div class="submit-note">Applications are reviewed within 3–7 days. You will be contacted via Discord.</div>
+    </div>
+
+  </form>
+</main>
+
+<!-- SUCCESS -->
+<div id="success-screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Application Submitted</div>
+  <p class="success-sub">Your application has been received and will be reviewed by the CCRP Management team within 3–7 days. Keep an eye on your Discord DMs.</p>
+  <div class="success-ref">Reference ID: <span id="ref-id">—</span></div>
+</div>
+
+<script>
+// ── Radio / Checkbox logic ─────────────────────────────────────
+document.querySelectorAll('.opt-item.radio, .opt-item.checkbox').forEach(item => {
+  item.addEventListener('click', function() {
+    const input = this.querySelector('input');
+    if (this.classList.contains('radio')) {
+      const name = input.name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        r.closest('.opt-item').classList.remove('selected');
+      });
+    } else {
+      input.checked = !input.checked;
+    }
+    input.checked = true;
+    this.classList.add('selected');
+    clearError(this.closest('.field'));
+  });
+});
+
+// ── Availability days ──────────────────────────────────────────
+document.querySelectorAll('.avail-day').forEach(day => {
+  day.addEventListener('click', function() {
+    this.classList.toggle('selected');
+  });
+});
+
+// ── Scale ──────────────────────────────────────────────────────
+document.querySelectorAll('.scale-num').forEach(num => {
+  num.addEventListener('click', function() {
+    this.closest('.scale-wrap').querySelectorAll('.scale-num').forEach(n => n.classList.remove('selected'));
+    this.classList.add('selected');
+    document.getElementById('err-maturity').parentElement.classList.remove('has-error');
+  });
+});
+
+// ── Agreement ──────────────────────────────────────────────────
+document.getElementById('agree-box').addEventListener('click', function() {
+  this.classList.toggle('selected');
+  const box = this.querySelector('.opt-box');
+  box.textContent = this.classList.contains('selected') ? '✓' : '';
+  box.style.background = this.classList.contains('selected') ? 'var(--gold)' : '';
+  box.style.color = '#000';
+});
+
+// ── Char counters ──────────────────────────────────────────────
+function setupCounter(id, counterId, max) {
+  const el = document.getElementById(id);
+  const counter = document.getElementById(counterId);
+  if (!el || !counter) return;
+  el.addEventListener('input', () => {
+    const len = el.value.length;
+    counter.textContent = `${len}/${max}`;
+    counter.className = 'char-count' + (len > max * 0.9 ? (len >= max ? ' over' : ' warn') : '');
+  });
+}
+setupCounter('prev-detail','cc-prev',300);
+setupCounter('terminated-detail','cc-term',500);
+setupCounter('why-join','cc-why',800);
+setupCounter('scenario','cc-sc',600);
+setupCounter('strength','cc-str',500);
+setupCounter('weakness','cc-wk',500);
+setupCounter('additional','cc-add',600);
+
+// ── Validation helpers ─────────────────────────────────────────
+function setError(fieldId) {
+  const f = document.getElementById(fieldId);
+  if (f) f.classList.add('has-error');
+}
+function clearError(el) {
+  if (el) el.classList.remove('has-error');
+}
+function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+function radioVal(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value || ''; }
+
+// ── Submit ─────────────────────────────────────────────────────
+async function submitForm() {
+  let valid = true;
+
+  // Clear all errors
+  document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+  document.getElementById('avail-err').style.display = 'none';
+
+  // Required text fields
+  if (!val('roblox-user'))     { setError('f-roblox'); valid = false; }
+  if (!val('discord-user'))    { setError('f-discord'); valid = false; }
+
+  const age = parseInt(document.getElementById('age').value);
+  if (!age || age < 13 || age > 99) { setError('f-age'); valid = false; }
+
+  if (!document.getElementById('timezone').value) { setError('f-timezone'); valid = false; }
+
+  const pt = parseInt(document.getElementById('playtime').value);
+  if (isNaN(pt) || pt < 0) { setError('f-playtime'); valid = false; }
+
+  if (!radioVal('prev_staff'))  { setError('f-prev-staff'); valid = false; }
+  if (!radioVal('terminated'))  { setError('f-terminated'); valid = false; }
+
+  // Availability
+  const days = document.querySelectorAll('.avail-day.selected');
+  if (days.length === 0) { document.getElementById('avail-err').style.display = 'block'; valid = false; }
+
+  if (!document.getElementById('hours-week').value) { setError('f-hours-week'); valid = false; }
+
+  // Written questions
+  if (val('why-join').length < 80) { setError('f-why'); document.getElementById('err-why').textContent = 'Minimum 80 characters required.'; valid = false; }
+  if (val('scenario').length < 60) { setError('f-scenario'); document.getElementById('err-sc').textContent = 'Minimum 60 characters required.'; valid = false; }
+  if (!val('strength')) { setError('f-strength'); valid = false; }
+  if (!val('weakness')) { setError('f-weakness'); valid = false; }
+
+  // Maturity scale
+  if (!document.querySelector('.scale-num.selected')) {
+    document.getElementById('err-maturity').style.display = 'block';
+    document.getElementById('err-maturity').parentElement.classList.add('has-error');
+    valid = false;
+  }
+
+  if (!radioVal('rules_read')) { setError('f-rules-read'); valid = false; }
+
+  // Agreement
+  if (!document.getElementById('agree-box').classList.contains('selected')) {
+    document.getElementById('agree-box').style.borderColor = 'var(--red)';
+    valid = false;
+  } else {
+    document.getElementById('agree-box').style.borderColor = '';
+  }
+
+  if (!valid) {
+    const firstErr = document.querySelector('.field.has-error, .avail-err');
+    document.querySelector('.has-error, [style*="var(--red)"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Collect data
+  const refId = 'CCRP-' + Date.now().toString(36).toUpperCase();
+  const selectedDays = [...document.querySelectorAll('.avail-day.selected')].map(d => d.dataset.day).join(', ');
+  const maturity = document.querySelector('.scale-num.selected')?.dataset.val || '—';
+
+  const embed = {
+    username: "CCRP Staff Applications",
+    avatar_url: "https://i.imgur.com/AfFp7pu.png",
+    embeds: [{
+      title: "📋 New Staff Application",
+      color: 0xC8971A,
+      fields: [
+        { name: "🎮 Roblox Username",  value: val('roblox-user'),   inline: true },
+        { name: "💬 Discord",          value: val('discord-user'),   inline: true },
+        { name: "🎂 Age",              value: val('age'),            inline: true },
+        { name: "🌍 Timezone",         value: document.getElementById('timezone').value || '—', inline: true },
+        { name: "⏱ ERLC Hours",       value: val('playtime') + 'h', inline: true },
+        { name: "📅 Weekly Availability", value: document.getElementById('hours-week').value || '—', inline: true },
+        { name: "📆 Available Days",   value: selectedDays || '—',   inline: false },
+        { name: "👔 Previous Staff",   value: radioVal('prev_staff') === 'yes' ? '✅ Yes' : '❌ No', inline: true },
+        { name: "⚠️ Ever Terminated", value: radioVal('terminated') === 'yes' ? '⚠️ Yes' : '✅ No', inline: true },
+        { name: "🧠 Maturity (1–10)", value: maturity + '/10',       inline: true },
+        { name: "📖 Read Staff Guide", value: {full:'Read fully ✅', most:'Read most 🟡', skim:'Skimmed 🟠', no:'Not read ❌'}[radioVal('rules_read')] || '—', inline: true },
+        ...(val('prev-detail') ? [{ name: "Previous Staff Details", value: val('prev-detail'), inline: false }] : []),
+        ...(val('terminated-detail') ? [{ name: "Termination Explanation", value: val('terminated-detail'), inline: false }] : []),
+        { name: "❓ Why do you want to join?", value: val('why-join') || '—', inline: false },
+        { name: "🎭 Scenario Answer",  value: val('scenario') || '—', inline: false },
+        { name: "💪 Strongest Quality", value: val('strength') || '—', inline: false },
+        { name: "📈 Area to Improve",  value: val('weakness') || '—', inline: false },
+        ...(val('additional') ? [{ name: "📝 Additional Info", value: val('additional'), inline: false }] : []),
+      ],
+      footer: { text: `Reference ID: ${refId}` },
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  try {
+    const res = await fetch('https://discord.com/api/webhooks/1487896316016328735/yS1T5smKKZm0A2ygp25Sz_6--7VpEBQM2XGJeiK2HCf9n1b2z5LZGCBrijhgdQ7bpNOo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(embed)
+    });
+
+    if (!res.ok) throw new Error('Webhook failed');
+
+    document.getElementById('ref-id').textContent = refId;
+    const s = document.getElementById('success-screen');
+    s.style.display = 'flex';
+    s.style.animation = 'fadeIn .4s ease both';
+    window.scrollTo(0, 0);
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT APPLICATION';
+    alert('Something went wrong sending your application. Please try again or contact staff directly on Discord.');
+  }
+}
+</script>
+</body>
+</html>
